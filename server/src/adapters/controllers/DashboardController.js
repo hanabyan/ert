@@ -82,4 +82,30 @@ export class DashboardController {
             res.status(500).json({ error: 'Internal server error' });
         }
     }
+
+    async getAllPropertiesWithStatus(req, res) {
+        try {
+            const { startMonth, startYear } = req.query;
+            
+            // Default to current month - 5 months (to show last 6 months ending with current)
+            const now = new Date();
+            let month = startMonth ? parseInt(startMonth) : now.getMonth() + 1;
+            let year = startYear ? parseInt(startYear) : now.getFullYear();
+            
+            // Calculate start of 6-month period (go back 5 months from current)
+            if (!startMonth && !startYear) {
+                month = month - 5;
+                if (month <= 0) {
+                    month += 12;
+                    year--;
+                }
+            }
+
+            const data = await this.dashboardUseCase.getAllPropertiesWithStatus(month, year);
+            res.json(data);
+        } catch (error) {
+            console.error('Get all properties with status error:', error);
+            res.status(500).json({ error: error.message });
+        }
+    }
 }

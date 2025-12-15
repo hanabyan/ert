@@ -24,12 +24,13 @@ export class User {
 
 // Property Entity
 export class Property {
-    constructor({ id, block, number, type, owner_id, created_at, updated_at }) {
+    constructor({ id, block, number, type, owner_id, bast_date, created_at, updated_at }) {
         this.id = id;
         this.block = block;
         this.number = number;
         this.type = type;
         this.ownerId = owner_id;
+        this.bastDate = bast_date;
         this.createdAt = created_at;
         this.updatedAt = updated_at;
     }

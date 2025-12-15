@@ -104,4 +104,30 @@ export class TransactionRepository {
         ]);
         return rows;
     }
+
+    async getPendingPaymentItemsGroupedByMonth(propertyId, startMonth, startYear, endMonth, endYear) {
+        const query = `
+            SELECT 
+                pi.year,
+                pi.month,
+                SUM(pi.amount) as total_paid,
+                GROUP_CONCAT(t.id) as transaction_ids,
+                MAX(t.status) as status
+            FROM payment_items pi
+            JOIN transactions t ON pi.transaction_id = t.id
+            WHERE pi.property_id = ?
+                AND ((pi.year = ? AND pi.month >= ?) OR pi.year > ?)
+                AND ((pi.year = ? AND pi.month <= ?) OR pi.year < ?)
+                AND t.status = 'pending'
+            GROUP BY pi.year, pi.month
+            ORDER BY pi.year, pi.month
+        `;
+        
+        const [rows] = await pool.query(query, [
+            propertyId,
+            startYear, startMonth, startYear,
+            endYear, endMonth, endYear
+        ]);
+        return rows;
+    }
 }

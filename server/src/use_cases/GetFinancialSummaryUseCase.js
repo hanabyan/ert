@@ -1,3 +1,4 @@
+import pool from '../frameworks/database/connection.js';
 import { TransactionRepository } from '../adapters/repositories/TransactionRepository.js';
 import { ExpenseRepository } from '../adapters/repositories/ExpenseRepository.js';
 
@@ -14,7 +15,7 @@ export class GetFinancialSummaryUseCase {
         const endDate = `${year}-${String(month).padStart(2, '0')}-${lastDay}`;
 
         // Get all verified transactions in this month
-        const [incomeRows] = await this.transactionRepo.pool.query(
+        const [incomeRows] = await pool.query(
             `SELECT SUM(total_amount) as total 
        FROM transactions 
        WHERE status = 'verified' 

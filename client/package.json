@@ -10,9 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.1.0",
+    "antd": "^6.1.0",
     "axios": "^1.13.2",
+    "dayjs": "^1.11.19",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-router-dom": "^7.10.1",
     "vite-plugin-pwa": "^1.2.0"
   },
   "devDependencies": {

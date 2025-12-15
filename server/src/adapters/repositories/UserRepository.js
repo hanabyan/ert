@@ -34,6 +34,37 @@ export class UserRepository {
         );
     }
 
+    async updateUser(id, updates) {
+        const fields = [];
+        const values = [];
+
+        if (updates.full_name !== undefined) {
+            fields.push('full_name = ?');
+            values.push(updates.full_name);
+        }
+        if (updates.role !== undefined) {
+            fields.push('role = ?');
+            values.push(updates.role);
+        }
+        if (updates.phone !== undefined) {
+            fields.push('phone = ?');
+            values.push(updates.phone);
+        }
+        if (updates.email !== undefined) {
+            fields.push('email = ?');
+            values.push(updates.email);
+        }
+
+        if (fields.length > 0) {
+            fields.push('updated_at = NOW()');
+            values.push(id);
+            await pool.query(
+                `UPDATE users SET ${fields.join(', ')} WHERE id = ?`,
+                values
+            );
+        }
+    }
+
     async updatePassword(id, newPassword) {
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         await pool.query(
@@ -48,5 +79,13 @@ export class UserRepository {
 
     async delete(id) {
         await pool.query('DELETE FROM users WHERE id = ?', [id]);
+    }
+
+    async updateProfile(userId, profileData) {
+        const { full_name, phone, email } = profileData;
+        await pool.query(
+            'UPDATE users SET full_name = ?, phone = ?, email = ?, updated_at = NOW() WHERE id = ?',
+            [full_name, phone, email, userId]
+        );
     }
 }

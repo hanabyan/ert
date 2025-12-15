@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS properties (
     number INT NOT NULL,
     type ENUM('rumah', 'tanah') NOT NULL DEFAULT 'rumah',
     owner_id INT NULL,
+    bast_date DATE NULL COMMENT 'Tanggal Berita Acara Serah Terima - mulai wajib bayar iuran',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY unique_block_number (block, number),
@@ -87,6 +88,19 @@ CREATE TABLE IF NOT EXISTS expenses (
     FOREIGN KEY (recipient_id) REFERENCES expense_recipients(id) ON DELETE SET NULL
 );
 
+-- Property Users Table (Many-to-Many with relation type)
+CREATE TABLE IF NOT EXISTS property_users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    property_id INT NOT NULL,
+    user_id INT NOT NULL,
+    relation_type ENUM('pemilik', 'keluarga', 'sewa') NOT NULL DEFAULT 'pemilik',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_property_user (property_id, user_id),
+    FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- Audit Logs Table
 CREATE TABLE IF NOT EXISTS audit_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -107,4 +121,6 @@ CREATE INDEX idx_payment_items_transaction ON payment_items(transaction_id);
 CREATE INDEX idx_payment_items_property ON payment_items(property_id);
 CREATE INDEX idx_payment_items_date ON payment_items(year, month);
 CREATE INDEX idx_expenses_date ON expenses(date);
+CREATE INDEX idx_property_users_property ON property_users(property_id);
+CREATE INDEX idx_property_users_user ON property_users(user_id);
 CREATE INDEX idx_audit_logs_target ON audit_logs(target_type, target_id);

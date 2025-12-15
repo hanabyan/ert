@@ -47,11 +47,28 @@ export const authService = {
     getProfile: async () => {
         const { data } = await api.get('/auth/profile');
         return data;
+    },
+
+    getActivity: async () => {
+        const { data } = await api.get('/auth/activity');
+        return data;
+    },
+
+    updateProfile: async (profileData) => {
+        const { data } = await api.put('/auth/profile', profileData);
+        return data;
     }
 };
 
 // Dashboard Service (Public)
 export const dashboardService = {
+    getAllPropertiesWithStatus: async (startMonth, startYear) => {
+        const { data } = await api.get('/dashboard/properties/all', {
+            params: { startMonth, startYear }
+        });
+        return data;
+    },
+
     searchProperty: async (block, number) => {
         const { data } = await api.get('/dashboard/property/search', {
             params: { block, number }
@@ -178,15 +195,75 @@ export const adminService = {
         return data;
     },
 
-    updatePropertyOwner: async (id, ownerId) => {
-        const { data } = await api.put(`/admin/properties/${id}/owner`, { ownerId });
+    addProperty: async (property) => {
+        const { data } = await api.post('/admin/properties', property);
         return data;
     },
 
-    updatePropertyType: async (id, type) => {
-        const { data } = await api.put(`/admin/properties/${id}/type`, { type });
+    updateProperty: async (id, property) => {
+        const { data } = await api.put(`/admin/properties/${id}`, property);
         return data;
-    }
+    },
+
+    deleteProperty: async (id) => {
+        const { data } = await api.delete(`/admin/properties/${id}`);
+        return data;
+    },
+
+    // Users
+    getUsers: async () => {
+        const { data } = await api.get('/admin/users');
+        return data;
+    },
+
+    addUser: async (user) => {
+        const { data } = await api.post('/admin/users', user);
+        return data;
+    },
+
+    updateUser: async (id, user) => {
+        const { data } = await api.put(`/admin/users/${id}`, user);
+        return data;
+    },
+
+    deleteUser: async (id) => {
+        const { data } = await api.delete(`/admin/users/${id}`);
+        return data;
+    },
+
+    // Property-User Relationships
+    getPropertyUsers: async (propertyId) => {
+        const { data } = await api.get(`/admin/properties/${propertyId}/users`);
+        return data;
+    },
+
+    addPropertyUser: async (propertyId, userId, relationType) => {
+        const { data } = await api.post(`/admin/properties/${propertyId}/users`, {
+            userId,
+            relationType
+        });
+        return data;
+    },
+
+    updatePropertyUser: async (id, relationType) => {
+        const { data } = await api.put(`/admin/property-users/${id}`, { relationType });
+        return data;
+    },
+
+    deletePropertyUser: async (id) => {
+        const { data } = await api.delete(`/admin/property-users/${id}`);
+        return data;
+    },
+
+    // Admin Create Payment for User
+    createPaymentForUser: async (formData) => {
+        const { data } = await api.post('/admin/payments/create', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return data;
+    },
 };
 
 export default api;

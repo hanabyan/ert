@@ -1,4 +1,5 @@
 import pool from './connection.js';
+import bcrypt from 'bcryptjs';
 
 // Property data based on user requirements
 const PROPERTY_DATA = {
@@ -18,7 +19,7 @@ async function seedDatabase() {
         console.log('🌱 Starting database seeding...');
 
         // 1. Create Admin User
-        const adminPassword = '$2a$10$YourHashedPasswordHere'; // bcrypt hash for 'admin123'
+        const adminPassword = await bcrypt.hash('admin123', 10);
         await connection.query(`
             INSERT INTO users (username, password, full_name, role) 
             VALUES ('admin', ?, 'Administrator', 'admin')

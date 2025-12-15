@@ -41,4 +41,11 @@ export class PropertyRepository {
             [type, propertyId]
         );
     }
+
+    async updateBastDate(propertyId, bastDate) {
+        await pool.query(
+            'UPDATE properties SET bast_date = ?, updated_at = NOW() WHERE id = ?',
+            [bastDate, propertyId]
+        );
+    }
 }
