@@ -54,7 +54,7 @@ ert/
 ## Setup Instructions
 
 ### Prerequisites
-- Node.js 18+
+- Node.js 20+
 - MySQL 5.7+
 
 ### Database Setup
