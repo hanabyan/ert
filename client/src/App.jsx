@@ -457,11 +457,11 @@ function AdminDashboard() {
         if (location.pathname.includes('/verify')) return '1';
         if (location.pathname.includes('/expenses')) return '2';
         if (location.pathname.includes('/financial')) return '3';
-        if (location.pathname.includes('/tariffs')) return '4';
-        if (location.pathname.includes('/recipients')) return '5';
-        if (location.pathname.includes('/properties')) return '6';
-        if (location.pathname.includes('/users')) return '7';
-        if (location.pathname.includes('/add-payment')) return '8';
+        if (location.pathname.includes('/add-payment')) return '4';
+        if (location.pathname.includes('/tariffs')) return 'settings-1';
+        if (location.pathname.includes('/recipients')) return 'settings-2';
+        if (location.pathname.includes('/properties')) return 'settings-3';
+        if (location.pathname.includes('/users')) return 'settings-4';
         return '1';
     };
 
@@ -483,28 +483,35 @@ function AdminDashboard() {
         },
         {
             key: '4',
-            icon: <DollarCircleOutlined />,
-            label: <Link to="/admin/tariffs">Kelola Tarif</Link>,
-        },
-        {
-            key: '5',
-            icon: <TeamOutlined />,
-            label: <Link to="/admin/recipients">Kelola Penerima</Link>,
-        },
-        {
-            key: '6',
-            icon: <HomeOutlined />,
-            label: <Link to="/admin/properties">Kelola Properti</Link>,
-        },
-        {
-            key: '7',
-            icon: <UserOutlined />,
-            label: <Link to="/admin/users">Kelola Pengguna</Link>,
-        },
-        {
-            key: '8',
             icon: <DollarOutlined />,
             label: <Link to="/admin/add-payment">Tambah Pembayaran</Link>,
+        },
+        {
+            key: 'settings',
+            icon: <SettingOutlined />,
+            label: 'Pengaturan',
+            children: [
+                {
+                    key: 'settings-1',
+                    icon: <DollarCircleOutlined />,
+                    label: <Link to="/admin/tariffs">Kelola Tarif</Link>,
+                },
+                {
+                    key: 'settings-2',
+                    icon: <TeamOutlined />,
+                    label: <Link to="/admin/recipients">Kelola Penerima</Link>,
+                },
+                {
+                    key: 'settings-3',
+                    icon: <HomeOutlined />,
+                    label: <Link to="/admin/properties">Kelola Properti</Link>,
+                },
+                {
+                    key: 'settings-4',
+                    icon: <UserOutlined />,
+                    label: <Link to="/admin/users">Kelola Pengguna</Link>,
+                },
+            ],
         },
     ];
 
