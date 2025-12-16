@@ -32,3 +32,6 @@ coverage/
 # Temporary files
 *.tmp
 *.temp
+
+#seeders
+20251215215920_users.sql
