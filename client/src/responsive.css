@@ -136,7 +136,7 @@
 
 /* Page Padding - Adjust for mobile */
 @media (max-width: 768px) {
-  .ant-layout-content {
+  .ant-layout-content:not(.login-page) {
     margin: var(--spacing-mobile) !important;
     padding: var(--spacing-mobile) !important;
   }
@@ -147,13 +147,13 @@
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
-  .ant-layout-content {
+  .ant-layout-content:not(.login-page) {
     margin: var(--spacing-tablet) !important;
   }
 }
 
 @media (min-width: 1025px) {
-  .ant-layout-content {
+  .ant-layout-content:not(.login-page) {
     margin: var(--spacing-desktop) !important;
   }
 }
