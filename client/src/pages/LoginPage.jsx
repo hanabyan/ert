@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Layout, Card, Form, Input, Button, Alert, Typography, Flex } from 'antd';
-import { LoginOutlined } from '@ant-design/icons';
+import { useNavigate, Link } from 'react-router-dom';
+import { Layout, Card, Form, Input, Button, Alert, Typography, Flex, Divider, Space } from 'antd';
+import { LoginOutlined, HomeOutlined, PhoneOutlined, MailOutlined } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
+import WhatsAppButton from '../components/WhatsAppButton';
 
 const { Content } = Layout;
-const { Title } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 export default function LoginPage() {
     const { login } = useAuth();
@@ -67,6 +68,44 @@ export default function LoginPage() {
                             </Button>
                         </Form.Item>
                     </Form>
+
+                    <Divider />
+
+                    {/* Link ke Halaman Utama */}
+                    <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                        <Link to="/" style={{ fontSize: '14px' }}>
+                            <Space>
+                                <HomeOutlined />
+                                <span>Kembali ke Halaman Utama</span>
+                            </Space>
+                        </Link>
+                    </div>
+
+                    {/* Informasi Kontak Admin */}
+                    <Alert
+                        title="Butuh Bantuan?"
+                        description={
+                            <Space orientation="vertical" size="small" style={{ width: '100%' }}>
+                                <Text type="secondary" style={{ fontSize: '13px' }}>
+                                    Jika mengalami kendala login, silakan hubungi admin:
+                                </Text>
+                                <WhatsAppButton
+                                    phoneNumber={import.meta.env.VITE_ADMIN_CONTACT_PHONE || "6281234567890"}
+                                    message="Halo Admin, saya mengalami kendala saat login ke sistem RT/RW. Mohon bantuannya."
+                                    buttonText="Hubungi Admin via WhatsApp"
+                                    size="small"
+                                    block
+                                />
+                            </Space>
+                        }
+                        type="info"
+                        showIcon
+                        style={{ 
+                            marginTop: 8,
+                            backgroundColor: '#f0f5ff',
+                            border: '1px solid #adc6ff'
+                        }}
+                    />
                 </Card>
             </Content>
         </Flex>
