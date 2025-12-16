@@ -346,7 +346,7 @@ export default function AdminProperties() {
                     dataSource={properties}
                     rowKey="id"
                     loading={loading}
-                    scroll={{ x: 'max-content' }}
+                    scroll={{ x: 'max-content', y: 'calc(100vh - 350px)' }}
                     pagination={{
                         pageSize: 20,
                         showSizeChanger: true,

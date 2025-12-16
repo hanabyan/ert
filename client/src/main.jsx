@@ -5,6 +5,7 @@ import idID from 'antd/locale/id_ID'
 import dayjs from 'dayjs'
 import 'dayjs/locale/id'
 import './index.css'
+import './responsive.css'
 import App from './App.jsx'
 
 dayjs.locale('id')

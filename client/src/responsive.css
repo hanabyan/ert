@@ -1,0 +1,314 @@
+/* Responsive Design Adjustments */
+
+/* Mobile First - Base styles for mobile */
+:root {
+  --spacing-mobile: 12px;
+  --spacing-tablet: 16px;
+  --spacing-desktop: 24px;
+}
+
+/* Tables - Mobile enhancements */
+@media (max-width: 768px) {
+  /* Smooth scrolling on iOS - still useful */
+  .ant-table-wrapper {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Extend table to card edges for better scrolling UX */
+  .ant-card .ant-table-wrapper {
+    margin: 0 -12px; /* Extend to card edges */
+    padding: 0 12px;
+  }
+  
+  /* Visual scroll indicator - nice to have for UX */
+  .ant-table-wrapper {
+    position: relative;
+  }
+  
+  .ant-table-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 30px;
+    background: linear-gradient(to left, rgba(255,255,255,0.9), transparent);
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.3s;
+  }
+}
+
+/* Sticky Table Header - All viewports */
+.ant-table-thead > tr > th {
+  position: sticky !important;
+  top: 0;
+  z-index: 2;
+  background: #fafafa !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+/* Dark mode header background */
+.ant-table-thead > tr > th::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: inherit;
+  z-index: -1;
+}
+
+/* Cards - Responsive grid */
+@media (max-width: 576px) {
+  .ant-row {
+    margin: 0 !important;
+  }
+  
+  .ant-col {
+    padding: 8px !important;
+  }
+  
+  /* Full width cards on mobile */
+  .ant-card {
+    margin-bottom: 16px;
+  }
+}
+
+/* Forms - Stack on mobile */
+@media (max-width: 768px) {
+  .ant-form-item {
+    margin-bottom: 16px;
+  }
+  
+  .ant-form-horizontal .ant-form-item-label,
+  .ant-form-horizontal .ant-form-item-control-wrapper {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  
+  /* Make select and input full width */
+  .ant-select,
+  .ant-input-number,
+  .ant-picker {
+    width: 100% !important;
+  }
+}
+
+/* Modals - Full screen on mobile */
+@media (max-width: 576px) {
+  .ant-modal {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    top: 0;
+  }
+  
+  .ant-modal-content {
+    min-height: 100vh;
+    border-radius: 0;
+  }
+  
+  .ant-modal-body {
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+  }
+}
+
+/* Drawer - Full width on mobile */
+@media (max-width: 768px) {
+  .ant-drawer-content-wrapper {
+    width: 100% !important;
+  }
+}
+
+/* Statistics Cards - Responsive */
+@media (max-width: 992px) {
+  .ant-statistic-title {
+    font-size: 14px;
+  }
+  
+  .ant-statistic-content {
+    font-size: 20px;
+  }
+}
+
+/* Page Padding - Adjust for mobile */
+@media (max-width: 768px) {
+  .ant-layout-content {
+    margin: var(--spacing-mobile) !important;
+    padding: var(--spacing-mobile) !important;
+  }
+  
+  .ant-card {
+    padding: var(--spacing-mobile);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .ant-layout-content {
+    margin: var(--spacing-tablet) !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .ant-layout-content {
+    margin: var(--spacing-desktop) !important;
+  }
+}
+
+/* Buttons - Full width on mobile */
+@media (max-width: 576px) {
+  .ant-btn-block {
+    width: 100%;
+  }
+  
+  /* Make important buttons full width on mobile */
+  .ant-card-extra .ant-btn,
+  .ant-modal-footer .ant-btn {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}
+
+/* Typography - Responsive font sizes */
+@media (max-width: 768px) {
+  h1.ant-typography,
+  .ant-typography h1 {
+    font-size: 24px;
+  }
+  
+  h2.ant-typography,
+  .ant-typography h2 {
+    font-size: 20px;
+  }
+  
+  h3.ant-typography,
+  .ant-typography h3 {
+    font-size: 18px;
+  }
+  
+  h4.ant-typography,
+  .ant-typography h4 {
+    font-size: 16px;
+  }
+}
+
+/* Descriptions - Stack on mobile */
+@media (max-width: 768px) {
+  .ant-descriptions-item-label,
+  .ant-descriptions-item-content {
+    display: block;
+    width: 100%;
+  }
+}
+
+/* Dashboard Grid - Responsive columns */
+@media (max-width: 576px) {
+  /* Force single column on mobile */
+  .ant-col-xs-24 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+  /* 2 columns on small tablets */
+  .ant-col-sm-12 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+/* Header - Responsive */
+@media (max-width: 768px) {
+  .ant-layout-header {
+    padding: 0 16px !important;
+  }
+  
+  .ant-layout-header h4 {
+    font-size: 16px;
+  }
+  
+  .ant-layout-header .ant-btn span {
+    display: none; /* Hide text, show only icon */
+  }
+}
+
+/* Pagination - Responsive */
+@media (max-width: 576px) {
+  .ant-pagination {
+    text-align: center;
+  }
+  
+  .ant-pagination-total-text {
+    display: none;
+  }
+  
+  .ant-pagination-options {
+    display: none !important;
+  }
+}
+
+/* Upload - Responsive */
+@media (max-width: 576px) {
+  .ant-upload-list-picture-card .ant-upload-list-item {
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* Tabs - Scrollable on mobile */
+@media (max-width: 768px) {
+  .ant-tabs-nav-wrap {
+    overflow-x: auto;
+  }
+  
+  .ant-tabs-nav-list {
+    flex-wrap: nowrap;
+  }
+}
+
+/* Fix Sider responsive behavior */
+@media (max-width: 992px) {
+  .ant-layout-sider-collapsed {
+    flex: 0 0 0 !important;
+    max-width: 0 !important;
+    min-width: 0 !important;
+    width: 0 !important;
+  }
+}
+
+/* Improve touch targets on mobile */
+@media (max-width: 768px) {
+  .ant-btn,
+  .ant-input,
+  .ant-select-selector {
+    min-height: 44px; /* iOS recommended touch target */
+  }
+  
+  .ant-menu-item {
+    min-height: 48px;
+    line-height: 48px;
+  }
+}
+
+/* Spacing adjustments for compact mobile view */
+@media (max-width: 576px) {
+  .ant-space-vertical {
+    gap: 12px !important;
+  }
+  
+  .ant-form-item {
+    margin-bottom: 12px;
+  }
+  
+  .ant-card-head {
+    padding: 12px;
+  }
+  
+  .ant-card-body {
+    padding: 12px;
+  }
+}
