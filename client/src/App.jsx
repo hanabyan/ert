@@ -174,7 +174,9 @@ function AppContent() {
             {/* Public Routes */}
             <Route path="/" element={
                 <PublicLayout>
-                    <Dashboard />
+                    <Content style={{ margin: '24px' }}>
+                        <Dashboard />
+                    </Content>
                 </PublicLayout>
             } />
             <Route path="/login" element={<LoginPage />} />

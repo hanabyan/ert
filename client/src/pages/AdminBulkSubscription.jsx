@@ -158,7 +158,7 @@ export default function AdminBulkSubscription() {
     const selectedComponent = components.find(c => c.id === parseInt(selectedComponentId));
 
     return (
-        <div style={{ padding: '24px' }}>
+        <div>
             <Card>
                 <div style={{ marginBottom: 24 }}>
                     <Title level={3}>

@@ -134,30 +134,6 @@
   }
 }
 
-/* Page Padding - Adjust for mobile */
-@media (max-width: 768px) {
-  .ant-layout-content:not(.login-page) {
-    margin: var(--spacing-mobile) !important;
-    padding: var(--spacing-mobile) !important;
-  }
-  
-  .ant-card {
-    padding: var(--spacing-mobile);
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  .ant-layout-content:not(.login-page) {
-    margin: var(--spacing-tablet) !important;
-  }
-}
-
-@media (min-width: 1025px) {
-  .ant-layout-content:not(.login-page) {
-    margin: var(--spacing-desktop) !important;
-  }
-}
-
 /* Buttons - Full width on mobile */
 @media (max-width: 576px) {
   .ant-btn-block {
@@ -309,6 +285,6 @@
   }
   
   .ant-card-body {
-    padding: 12px;
+    /* padding: 12px; */
   }
 }

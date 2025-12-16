@@ -314,7 +314,7 @@ export default function Dashboard() {
                 <>
                     {/* Summary Statistics */}
                     <Row gutter={16} style={{ marginBottom: 24 }}>
-                        <Col span={6}>
+                        <Col xs={24} sm={12} md={12} lg={6}>
                             <Card size="small">
                                 <Statistic
                                     title="Total Properti"
@@ -323,7 +323,7 @@ export default function Dashboard() {
                                 />
                             </Card>
                         </Col>
-                        <Col span={6}>
+                        <Col xs={24} sm={12} md={12} lg={6}>
                             <Card size="small">
                                 <Statistic
                                     title="Lunas Semua (6 Bulan)"
@@ -333,7 +333,7 @@ export default function Dashboard() {
                                 />
                             </Card>
                         </Col>
-                        <Col span={6}>
+                        <Col xs={24} sm={12} md={12} lg={6}>
                             <Card size="small">
                                 <Statistic
                                     title="Sebagian Lunas"
@@ -342,7 +342,7 @@ export default function Dashboard() {
                                 />
                             </Card>
                         </Col>
-                        <Col span={6}>
+                        <Col xs={24} sm={12} md={12} lg={6}>
                             <Card size="small">
                                 <Statistic
                                     title="Total Tunggakan"
@@ -397,7 +397,7 @@ export default function Dashboard() {
                         dataSource={filteredProperties}
                         rowKey="id"
                         loading={loading}
-                        scroll={{ x: 1200 }}
+                        scroll={{ x: 'max-content', y: 'calc(100vh - 250px)' }}
                         pagination={{
                             pageSize: 20,
                             showSizeChanger: true,
@@ -440,7 +440,7 @@ export default function Dashboard() {
                         dataSource={filteredProperties}
                         rowKey="id"
                         loading={loading}
-                        scroll={{ x: 800 }}
+                        scroll={{ x: 'max-content', y: 'calc(100vh - 400px)' }}
                         pagination={{
                             pageSize: 20,
                             showSizeChanger: true,
@@ -454,11 +454,11 @@ export default function Dashboard() {
     ];
 
     return (
-        <Content style={{ padding: '50px', maxWidth: 1600, margin: '0 auto' }}>
+        <Content>
             <Card>
                 <div style={{ marginBottom: 24 }}>
                     <Title level={2} style={{ textAlign: 'center', marginBottom: 10 }}>
-                        <HomeOutlined /> Daftar Iuran Pemeliharaan Lingkungan
+                        <HomeOutlined /> Daftar Iuran Warga
                     </Title>
                 </div>
 

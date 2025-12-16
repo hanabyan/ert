@@ -223,7 +223,7 @@ export default function ComponentSubscription() {
     const selectedPropertyData = Array.isArray(properties) ? properties.find(p => p.id === selectedProperty) : null;
 
     return (
-        <div style={{ padding: '24px' }}>
+        <div>
             <Card>
                 <Title level={3}>
                     <AppstoreOutlined /> Langganan Komponen Layanan

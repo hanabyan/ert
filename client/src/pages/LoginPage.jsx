@@ -37,7 +37,7 @@ export default function LoginPage() {
 
     return (
         <Flex justify="center" align="center" style={{ minHeight: '100vh' }}>
-            <Content className="login-page" style={{ padding: '50px', maxWidth: 400, margin: '0 auto' }}>
+            <Content style={{ padding: '50px', maxWidth: 400, margin: '0 auto' }}>
                 <Card>
                     <Title level={2} style={{ textAlign: 'center' }}>
                         <LoginOutlined /> Login

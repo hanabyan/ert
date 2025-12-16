@@ -218,7 +218,7 @@ export default function AdminAddPayment() {
     const selectedPropertyData = properties.find(p => p.id === selectedProperty);
 
     return (
-        <div style={{ padding: '24px' }}>
+        <div>
             <Card>
                 <Title level={3}>
                     <DollarOutlined /> Tambah Pembayaran (Admin)

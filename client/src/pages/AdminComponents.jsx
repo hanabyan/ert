@@ -274,7 +274,7 @@ export default function AdminComponents() {
     ];
 
     return (
-        <div style={{ padding: '24px' }}>
+        <div>
             <Card>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
                     <div>
