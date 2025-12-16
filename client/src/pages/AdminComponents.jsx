@@ -279,7 +279,7 @@ export default function AdminComponents() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
                     <div>
                         <Title level={3}>
-                            <AppstoreOutlined /> Kelola Tarif Komponen
+                            <AppstoreOutlined /> Kelola Tarif Opsi Layanan
                         </Title>
                         <Text type="secondary">
                             Kelola komponen layanan dan tarifnya

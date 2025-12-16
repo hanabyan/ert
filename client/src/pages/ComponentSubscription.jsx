@@ -3,6 +3,7 @@ import { Card, Table, Button, Modal, Select, DatePicker, Space, Typography, Tag,
 import { AppstoreOutlined, PlusOutlined, StopOutlined, ClockCircleOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { componentService, propertyService } from '../services/api';
 import { useMessage } from '../contexts/MessageContext';
+import { useAuth } from '../context/AuthContext';
 import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
@@ -10,7 +11,9 @@ const { Option } = Select;
 
 export default function ComponentSubscription() {
     const { message } = useMessage();
+    const { user } = useAuth();
     const [components, setComponents] = useState([]);
+    const [properties, setProperties] = useState([]);
     const [selectedProperty, setSelectedProperty] = useState(null);
     const [availableComponents, setAvailableComponents] = useState([]);
     const [subscriptions, setSubscriptions] = useState([]);
@@ -21,31 +24,21 @@ export default function ComponentSubscription() {
     const [selectedSubscription, setSelectedSubscription] = useState(null);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [authCheckDone, setAuthCheckDone] = useState(false);
+
+    const isAuthenticated = !!user;
 
     useEffect(() => {
-        checkAuth();
-    }, []);
-
-    useEffect(() => {
-        if (authCheckDone && isAuthenticated) {
+        if (isAuthenticated) {
             loadProperties();
             loadAvailableComponents();
         }
-    }, [authCheckDone, isAuthenticated]);
+    }, [isAuthenticated]);
 
     useEffect(() => {
         if (selectedProperty && isAuthenticated) {
             loadSubscriptions();
         }
     }, [selectedProperty, isAuthenticated]);
-
-    const checkAuth = () => {
-        const token = localStorage.getItem('token');
-        setIsAuthenticated(!!token);
-        setAuthCheckDone(true);
-    };
 
     const loadProperties = async () => {
         try {
@@ -226,23 +219,23 @@ export default function ComponentSubscription() {
         <div>
             <Card>
                 <Title level={3}>
-                    <AppstoreOutlined /> Langganan Komponen Layanan
+                    <AppstoreOutlined /> Opsi Layanan
                 </Title>
                 <Text type="secondary">
-                    Kelola langganan komponen layanan untuk properti Anda
+                    Kelola opsi layanan untuk properti Anda
                 </Text>
 
-                {!isAuthenticated && authCheckDone && (
+                {!isAuthenticated && (
                     <Alert
                         title="Login Diperlukan"
-                        description="Anda perlu login untuk melihat dan mengelola langganan komponen. Silakan login terlebih dahulu."
+                        description="Anda perlu login untuk melihat dan mengelola opsi layanan. Silakan login terlebih dahulu."
                         type="warning"
                         showIcon
                         style={{ marginTop: 16, marginBottom: 16 }}
                     />
                 )}
 
-                {isAuthenticated && authCheckDone && properties.length === 0 && (
+                {isAuthenticated && properties.length === 0 && (
                     <Alert
                         title="Tidak Ada Properti"
                         description="Anda belum terhubung dengan properti manapun. Silakan hubungi admin untuk menghubungkan akun Anda dengan properti."
@@ -339,7 +332,7 @@ export default function ComponentSubscription() {
                                                             onClick={() => showSubscribeModal(component)}
                                                             block
                                                         >
-                                                            Langganan
+                                                            Opsi Layanan
                                                         </Button>
                                                     )}
                                                 </Space>
@@ -351,7 +344,7 @@ export default function ComponentSubscription() {
                         </Card>
 
                         {/* My Subscriptions */}
-                        <Card title="Riwayat Langganan Saya">
+                        <Card title="Riwayat Opsi Layanan Saya">
                             <Table
                                 columns={subscriptionColumns}
                                 dataSource={subscriptions}
@@ -369,11 +362,11 @@ export default function ComponentSubscription() {
 
             {/* Subscribe Modal */}
             <Modal
-                title={<><PlusOutlined /> Langganan Komponen</>}
+                title={<><PlusOutlined /> Tambah Opsi Layanan</>}
                 open={subscribeModalVisible}
                 onOk={handleSubscribe}
                 onCancel={() => setSubscribeModalVisible(false)}
-                okText="Ajukan Langganan"
+                okText="Ajukan Opsi Layanan"
                 cancelText="Batal"
             >
                 {selectedComponent && (
@@ -392,7 +385,7 @@ export default function ComponentSubscription() {
 
                         <Space orientation="vertical" style={{ width: '100%' }}>
                             <div>
-                                <Text strong>Mulai Langganan: <Text type="danger">*</Text></Text>
+                                <Text strong>Mulai Layanan: <Text type="danger">*</Text></Text>
                                 <DatePicker
                                     style={{ width: '100%', marginTop: 8 }}
                                     value={startDate}
@@ -403,7 +396,7 @@ export default function ComponentSubscription() {
                             </div>
 
                             <div>
-                                <Text strong>Selesai Langganan (Opsional):</Text>
+                                <Text strong>Selesai Layanan (Opsional):</Text>
                                 <DatePicker
                                     style={{ width: '100%', marginTop: 8 }}
                                     value={endDate}
@@ -428,7 +421,7 @@ export default function ComponentSubscription() {
 
             {/* Unsubscribe Modal */}
             <Modal
-                title={<><StopOutlined /> Berhenti Langganan</>}
+                title={<><StopOutlined /> Berhenti Layanan</>}
                 open={unsubscribeModalVisible}
                 onOk={handleUnsubscribe}
                 onCancel={() => setUnsubscribeModalVisible(false)}
@@ -440,7 +433,7 @@ export default function ComponentSubscription() {
                     <>
                         <Alert
                             title="Perhatian"
-                            description="Anda akan mengajukan berhenti langganan komponen ini."
+                            description="Anda akan mengajukan berhenti langganan opsi layanan ini."
                             type="warning"
                             showIcon
                             style={{ marginBottom: 16 }}
@@ -450,7 +443,7 @@ export default function ComponentSubscription() {
                             <Descriptions.Item label="Komponen">
                                 {selectedSubscription.component_name}
                             </Descriptions.Item>
-                            <Descriptions.Item label="Mulai Langganan">
+                            <Descriptions.Item label="Mulai Layanan">
                                 {dayjs(selectedSubscription.startDate).format('DD MMMM YYYY')}
                             </Descriptions.Item>
                         </Descriptions>

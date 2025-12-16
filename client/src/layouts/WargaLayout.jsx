@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation, Routes, Route, Navigate } from 'react-r
 import { Layout, Menu, Button, Typography } from 'antd';
 import { 
     HomeOutlined, ShoppingCartOutlined, BarChartOutlined, 
-    UserOutlined, LogoutOutlined, AppstoreOutlined 
+    UserOutlined, LogoutOutlined, AppstoreOutlined, DollarOutlined
 } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
 import Dashboard from '../pages/Dashboard';
@@ -27,10 +27,10 @@ export default function WargaLayout() {
 
     const getSelectedKey = () => {
         if (location.pathname === '/warga/dashboard') return '1';
-        if (location.pathname === '/warga/payment') return '2';
+        if (location.pathname === '/warga/payment') return '2-1';
+        if (location.pathname === '/warga/components') return '2-2';
         if (location.pathname === '/warga/financial') return '3';
-        if (location.pathname === '/warga/components') return '4';
-        if (location.pathname === '/warga/profile') return '5';
+        if (location.pathname === '/warga/profile') return '4';
         return '1';
     };
 
@@ -43,7 +43,19 @@ export default function WargaLayout() {
         {
             key: '2',
             icon: <ShoppingCartOutlined />,
-            label: <Link to="/warga/payment">Bayar Iuran</Link>,
+            label: 'Iuran Saya',
+            children: [
+                {
+                    key: '2-1',
+                    icon: <DollarOutlined />,
+                    label: <Link to="/warga/payment">Bayar Iuran</Link>,
+                },
+                {
+                    key: '2-2',
+                    icon: <AppstoreOutlined />,
+                    label: <Link to="/warga/components">Opsi Layanan</Link>,
+                },
+            ],
         },
         {
             key: '3',
@@ -52,11 +64,6 @@ export default function WargaLayout() {
         },
         {
             key: '4',
-            icon: <AppstoreOutlined />,
-            label: <Link to="/warga/components">Langganan Komponen</Link>,
-        },
-        {
-            key: '5',
             icon: <UserOutlined />,
             label: <Link to="/warga/profile">Profil Saya</Link>,
         },

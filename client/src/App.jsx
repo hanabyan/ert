@@ -99,7 +99,7 @@ function AdminDashboard() {
                 {
                     key: 'settings-5',
                     icon: <AppstoreOutlined />,
-                    label: <Link to="/admin/components">Kelola Tarif Komponen</Link>,
+                    label: <Link to="/admin/components">Kelola Tarif Opsi Layanan</Link>,
                 },
                 {
                     key: 'settings-6',

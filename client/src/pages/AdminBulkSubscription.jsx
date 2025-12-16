@@ -162,10 +162,10 @@ export default function AdminBulkSubscription() {
             <Card>
                 <div style={{ marginBottom: 24 }}>
                     <Title level={3}>
-                        <AppstoreOutlined /> Kelola Langganan Komponen
+                        <AppstoreOutlined /> Kelola Opsi Layanan
                     </Title>
                     <Text type="secondary">
-                        Kelola langganan komponen untuk properti secara massal
+                        Kelola opsi layanan untuk properti secara massal
                     </Text>
                 </div>
 

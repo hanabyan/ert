@@ -148,10 +148,10 @@ export default function AdminComponentApproval() {
         <div>
             <Card>
                 <Title level={3}>
-                    <CheckCircleOutlined /> Approval Permintaan Komponen
+                    <CheckCircleOutlined /> Approval Permintaan Opsi Layanan
                 </Title>
                 <Text type="secondary">
-                    Setujui atau tolak permintaan langganan komponen dari warga
+                    Setujui atau tolak permintaan langganan opsi layanan dari warga
                 </Text>
 
                 <div style={{ marginTop: 24 }}>
