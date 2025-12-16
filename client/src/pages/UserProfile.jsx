@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Descriptions, Table, Tag, Tabs, Form, Input, Button, message, Modal } from 'antd';
+import { Card, Descriptions, Table, Tag, Tabs, Form, Input, Button, Modal } from 'antd';
 import { UserOutlined, EditOutlined, SaveOutlined, LockOutlined } from '@ant-design/icons';
 import { authService } from '../services/api';
+import { useMessage } from '../contexts/MessageContext';
 import dayjs from 'dayjs';
 
 export default function UserProfile() {
+    const { message } = useMessage();
     const [profile, setProfile] = useState(null);
     const [activity, setActivity] = useState([]);
     const [loading, setLoading] = useState(false);

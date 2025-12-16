@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Tag, Space, message, Modal, Image, Descriptions } from 'antd';
-import { CheckOutlined, CloseOutlined, EyeOutlined } from '@ant-design/icons';
+import { Card, Table, Button, Space, Tag, Image, Modal, Descriptions } from 'antd';
+import { CheckCircleOutlined, CloseCircleOutlined, EyeOutlined } from '@ant-design/icons';
 import { adminService } from '../services/api';
+import { useMessage } from '../contexts/MessageContext';
 
 export default function AdminPaymentVerification() {
+    const { message } = useMessage();
     const [payments, setPayments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState(null);

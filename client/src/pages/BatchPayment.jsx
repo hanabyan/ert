@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Card, Form, Select, InputNumber, Button, Table, message, Space, Upload } from 'antd';
+import { Card, Form, Select, InputNumber, Button, Table, Space, Upload } from 'antd';
 import { PlusOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import { paymentService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useMessage } from '../contexts/MessageContext';
 
 const { Option } = Select;
 
 export default function BatchPayment() {
+    const { message } = useMessage();
     const { user } = useAuth();
     const [form] = Form.useForm();
     const [cart, setCart] = useState([]);

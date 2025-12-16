@@ -20,7 +20,7 @@ createRoot(document.getElementById('root')).render(
                 },
             }}
         >
-            <AntdApp component={false}>
+            <AntdApp message={{ maxCount: 3 }} notification={{ maxCount: 3 }}>
                 <App />
             </AntdApp>
         </ConfigProvider>

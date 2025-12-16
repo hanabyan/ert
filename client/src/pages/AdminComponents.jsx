@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Modal, Form, Input, Switch, message, Space, Typography, Tabs, DatePicker, InputNumber, Select, Tag, Popconfirm } from 'antd';
+import { Card, Table, Button, Modal, Form, Input, Switch, Space, Typography, Tabs, DatePicker, InputNumber, Select, Tag, Popconfirm } from 'antd';
 import { AppstoreOutlined, PlusOutlined, EditOutlined, DollarOutlined, DeleteOutlined } from '@ant-design/icons';
 import { componentService } from '../services/api';
+import { useMessage } from '../contexts/MessageContext';
 import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
@@ -9,6 +10,7 @@ const { TextArea } = Input;
 const { Option } = Select;
 
 export default function AdminComponents() {
+    const { message } = useMessage();
     const [components, setComponents] = useState([]);
     const [loading, setLoading] = useState(false);
     const [componentModalVisible, setComponentModalVisible] = useState(false);

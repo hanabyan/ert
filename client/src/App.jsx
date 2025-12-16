@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { MessageProvider } from './contexts/MessageContext';
 import { Layout, Menu, Button, Typography } from 'antd';
 import {
     HomeOutlined, DollarOutlined, LogoutOutlined, SettingOutlined, WalletOutlined,
@@ -224,7 +225,9 @@ function App() {
     return (
         <BrowserRouter>
             <AuthProvider>
-                <AppContent />
+                <MessageProvider>
+                    <AppContent />
+                </MessageProvider>
             </AuthProvider>
         </BrowserRouter>
     );

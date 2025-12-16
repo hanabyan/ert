@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Modal, Select, DatePicker, message, Space, Typography, Tag, Alert, Descriptions, Row, Col, Statistic } from 'antd';
+import { Card, Table, Button, Modal, Select, DatePicker, Space, Typography, Tag, Alert, Descriptions, Row, Col, Statistic } from 'antd';
 import { AppstoreOutlined, PlusOutlined, StopOutlined, ClockCircleOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { componentService, propertyService } from '../services/api';
+import { useMessage } from '../contexts/MessageContext';
 import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 export default function ComponentSubscription() {
-    const [properties, setProperties] = useState([]);
+    const { message } = useMessage();
+    const [components, setComponents] = useState([]);
     const [selectedProperty, setSelectedProperty] = useState(null);
     const [availableComponents, setAvailableComponents] = useState([]);
     const [subscriptions, setSubscriptions] = useState([]);

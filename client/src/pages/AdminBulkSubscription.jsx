@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Select, message, Space, Typography, Tag, Alert, DatePicker } from 'antd';
-import { AppstoreOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { adminService, componentService } from '../services/api';
+import { Card, Table, Button, Select, Space, Tag, DatePicker, Alert, Flex, Typography } from 'antd';
+import { CheckCircleOutlined, StopOutlined } from '@ant-design/icons';
+import { componentService, adminService } from '../services/api';
+import { useMessage } from '../contexts/MessageContext';
 import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 export default function AdminBulkSubscription() {
+    const { message } = useMessage();
     const [properties, setProperties] = useState([]);
     const [components, setComponents] = useState([]);
     const [activeSubscriptions, setActiveSubscriptions] = useState([]);

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Modal, Form, Input, Select, Space, message, Popconfirm, Tag, Drawer, Avatar, DatePicker, Flex } from 'antd';
+import { Card, Table, Button, Modal, Form, Input, Select, Space, Popconfirm, Tag, Drawer, Avatar, DatePicker, Flex } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, HomeOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons';
 import { adminService } from '../services/api';
+import { useMessage } from '../contexts/MessageContext';
 import dayjs from 'dayjs';
 
 const { Option } = Select;
 
 export default function AdminProperties() {
+    const { message } = useMessage();
     const [properties, setProperties] = useState([]);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);

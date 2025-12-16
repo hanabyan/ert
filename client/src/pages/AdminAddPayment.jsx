@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Form, Select, DatePicker, InputNumber, Button, message, Table, Tag, Space, Upload, Typography, Row, Col, Divider, Alert } from 'antd';
+import { Card, Form, Select, DatePicker, InputNumber, Button, Table, Tag, Space, Upload, Typography, Row, Col, Divider, Alert } from 'antd';
 import { PlusOutlined, DeleteOutlined, SaveOutlined, UploadOutlined, DollarOutlined } from '@ant-design/icons';
+import { useMessage } from '../contexts/MessageContext';
 import { adminService } from '../services/api';
 import dayjs from 'dayjs';
 
@@ -8,6 +9,7 @@ const { Option } = Select;
 const { Title, Text } = Typography;
 
 export default function AdminAddPayment() {
+    const { message } = useMessage();
     const [form] = Form.useForm();
     const [properties, setProperties] = useState([]);
     const [users, setUsers] = useState([]);

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Modal, Form, Input, InputNumber, DatePicker, Select, Space, message, Popconfirm } from 'antd';
+import { Card, Table, Button, Modal, Form, Input, InputNumber, DatePicker, Select, Space, Popconfirm } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { adminService } from '../services/api';
+import { useMessage } from '../contexts/MessageContext';
 import dayjs from 'dayjs';
 
 export default function AdminExpenses() {
+    const { message } = useMessage();
     const [expenses, setExpenses] = useState([]);
     const [recipients, setRecipients] = useState([]);
     const [loading, setLoading] = useState(false);

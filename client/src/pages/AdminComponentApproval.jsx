@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Tag, Modal, Input, message, Space, Typography, Descriptions } from 'antd';
+import { Card, Table, Button, Space, Tag, Modal, Input, Typography, Descriptions } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined, EyeOutlined } from '@ant-design/icons';
 import { componentService } from '../services/api';
+import { useMessage } from '../contexts/MessageContext';
 import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
 export default function AdminComponentApproval() {
+    const { message } = useMessage();
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(false);
     const [rejectModalVisible, setRejectModalVisible] = useState(false);

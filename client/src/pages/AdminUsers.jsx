@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Modal, Form, Input, Select, message, Popconfirm, Tag, Space } from 'antd';
+import { Card, Table, Button, Modal, Form, Input, Select, Popconfirm, Tag, Space } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons';
 import { adminService } from '../services/api';
+import { useMessage } from '../contexts/MessageContext';
 
 const { Option } = Select;
 
 export default function AdminUsers() {
+    const { message } = useMessage();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
