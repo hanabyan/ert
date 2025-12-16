@@ -3,6 +3,7 @@ import { Card, Table, Button, Modal, Form, Input, Select, Space, Popconfirm, Tag
 import { PlusOutlined, EditOutlined, DeleteOutlined, HomeOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons';
 import { adminService } from '../services/api';
 import { useMessage } from '../contexts/MessageContext';
+import TableActionDropdown from '../components/TableActionDropdown';
 import dayjs from 'dayjs';
 
 const { Option } = Select;
@@ -292,33 +293,40 @@ export default function AdminProperties() {
         {
             title: 'Aksi',
             key: 'action',
+            width: 80,
             render: (_, record) => (
-                <Space>
-                    <Button
-                        icon={<TeamOutlined />}
-                        onClick={() => handleManageUsers(record)}
-                        type="default"
-                    >
-                        Penghuni
-                    </Button>
-                    <Button
-                        icon={<EditOutlined />}
-                        onClick={() => handleEdit(record)}
-                    >
-                        Edit
-                    </Button>
-                    <Popconfirm
-                        title="Hapus properti ini?"
-                        description="Properti yang memiliki transaksi tidak dapat dihapus"
-                        onConfirm={() => handleDelete(record.id)}
-                        okText="Ya"
-                        cancelText="Tidak"
-                    >
-                        <Button danger icon={<DeleteOutlined />}>
-                            Hapus
-                        </Button>
-                    </Popconfirm>
-                </Space>
+                <TableActionDropdown
+                    items={[
+                        {
+                            key: 'occupants',
+                            label: 'Penghuni',
+                            icon: <TeamOutlined />,
+                            onClick: () => handleManageUsers(record),
+                        },
+                        {
+                            key: 'edit',
+                            label: 'Edit',
+                            icon: <EditOutlined />,
+                            onClick: () => handleEdit(record),
+                        },
+                        {
+                            key: 'delete',
+                            label: 'Hapus',
+                            icon: <DeleteOutlined />,
+                            danger: true,
+                            onClick: () => {
+                                Modal.confirm({
+                                    title: 'Hapus properti ini?',
+                                    content: 'Properti yang memiliki transaksi tidak dapat dihapus',
+                                    okText: 'Ya',
+                                    cancelText: 'Tidak',
+                                    okType: 'danger',
+                                    onOk: () => handleDelete(record.id),
+                                });
+                            },
+                        },
+                    ]}
+                />
             ),
         },
     ];
@@ -338,6 +346,7 @@ export default function AdminProperties() {
                     dataSource={properties}
                     rowKey="id"
                     loading={loading}
+                    scroll={{ x: 'max-content' }}
                     pagination={{
                         pageSize: 20,
                         showSizeChanger: true,

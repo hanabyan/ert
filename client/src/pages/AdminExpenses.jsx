@@ -3,6 +3,7 @@ import { Card, Table, Button, Modal, Form, Input, InputNumber, DatePicker, Selec
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { adminService } from '../services/api';
 import { useMessage } from '../contexts/MessageContext';
+import TableActionDropdown from '../components/TableActionDropdown';
 import dayjs from 'dayjs';
 
 export default function AdminExpenses() {
@@ -114,25 +115,33 @@ export default function AdminExpenses() {
         {
             title: 'Aksi',
             key: 'action',
+            width: 80,
             render: (_, record) => (
-                <Space>
-                    <Button
-                        icon={<EditOutlined />}
-                        onClick={() => handleEdit(record)}
-                    >
-                        Edit
-                    </Button>
-                    <Popconfirm
-                        title="Hapus pengeluaran ini?"
-                        onConfirm={() => handleDelete(record.id)}
-                        okText="Ya"
-                        cancelText="Tidak"
-                    >
-                        <Button danger icon={<DeleteOutlined />}>
-                            Hapus
-                        </Button>
-                    </Popconfirm>
-                </Space>
+                <TableActionDropdown
+                    items={[
+                        {
+                            key: 'edit',
+                            label: 'Edit',
+                            icon: <EditOutlined />,
+                            onClick: () => handleEdit(record),
+                        },
+                        {
+                            key: 'delete',
+                            label: 'Hapus',
+                            icon: <DeleteOutlined />,
+                            danger: true,
+                            onClick: () => {
+                                Modal.confirm({
+                                    title: 'Hapus pengeluaran ini?',
+                                    okText: 'Ya',
+                                    cancelText: 'Tidak',
+                                    okType: 'danger',
+                                    onOk: () => handleDelete(record.id),
+                                });
+                            },
+                        },
+                    ]}
+                />
             ),
         },
     ];
@@ -151,6 +160,7 @@ export default function AdminExpenses() {
                 dataSource={expenses}
                 rowKey="id"
                 loading={loading}
+                    scroll={{ x: 'max-content' }}
             />
 
             <Modal

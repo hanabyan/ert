@@ -3,6 +3,7 @@ import { Card, Table, Button, Modal, Form, Input, Switch, Space, Typography, Tab
 import { AppstoreOutlined, PlusOutlined, EditOutlined, DollarOutlined, DeleteOutlined } from '@ant-design/icons';
 import { componentService } from '../services/api';
 import { useMessage } from '../contexts/MessageContext';
+import TableActionDropdown from '../components/TableActionDropdown';
 import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
@@ -186,23 +187,24 @@ export default function AdminComponents() {
         {
             title: 'Aksi',
             key: 'action',
+            width: 80,
             render: (_, record) => (
-                <Space>
-                    <Button
-                        type="link"
-                        icon={<DollarOutlined />}
-                        onClick={() => showRatesModal(record)}
-                    >
-                        Kelola Tarif
-                    </Button>
-                    <Button
-                        type="link"
-                        icon={<EditOutlined />}
-                        onClick={() => showEditComponentModal(record)}
-                    >
-                        Edit
-                    </Button>
-                </Space>
+                <TableActionDropdown
+                    items={[
+                        {
+                            key: 'rates',
+                            label: 'Kelola Tarif',
+                            icon: <DollarOutlined />,
+                            onClick: () => showRatesModal(record),
+                        },
+                        {
+                            key: 'edit',
+                            label: 'Edit',
+                            icon: <EditOutlined />,
+                            onClick: () => showEditComponentModal(record),
+                        },
+                    ]}
+                />
             ),
         },
     ];
@@ -239,33 +241,34 @@ export default function AdminComponents() {
         {
             title: 'Aksi',
             key: 'action',
+            width: 80,
             render: (_, record) => (
-                <Space>
-                    <Button
-                        type="link"
-                        icon={<EditOutlined />}
-                        onClick={() => showEditRateModal(record)}
-                        size="small"
-                    >
-                        Edit
-                    </Button>
-                    <Popconfirm
-                        title="Hapus Tarif"
-                        description="Yakin ingin menghapus tarif ini?"
-                        onConfirm={() => handleDeleteRate(record.id)}
-                        okText="Ya"
-                        cancelText="Tidak"
-                    >
-                        <Button
-                            type="link"
-                            danger
-                            icon={<DeleteOutlined />}
-                            size="small"
-                        >
-                            Hapus
-                        </Button>
-                    </Popconfirm>
-                </Space>
+                <TableActionDropdown
+                    items={[
+                        {
+                            key: 'edit',
+                            label: 'Edit',
+                            icon: <EditOutlined />,
+                            onClick: () => showEditRateModal(record),
+                        },
+                        {
+                            key: 'delete',
+                            label: 'Hapus',
+                            icon: <DeleteOutlined />,
+                            danger: true,
+                            onClick: () => {
+                                Modal.confirm({
+                                    title: 'Hapus Tarif',
+                                    content: 'Yakin ingin menghapus tarif ini?',
+                                    okText: 'Ya',
+                                    cancelText: 'Tidak',
+                                    okType: 'danger',
+                                    onOk: () => handleDeleteRate(record.id),
+                                });
+                            },
+                        },
+                    ]}
+                />
             ),
         },
     ];

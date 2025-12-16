@@ -112,6 +112,7 @@ export default function AdminPaymentVerification() {
                 dataSource={payments}
                 rowKey="id"
                 loading={loading}
+                scroll={{ x: 'max-content' }}
             />
 
             <Modal

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Button, Select, Space, Tag, DatePicker, Alert, Flex, Typography } from 'antd';
-import { CheckCircleOutlined, StopOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, StopOutlined, AppstoreOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { componentService, adminService } from '../services/api';
 import { useMessage } from '../contexts/MessageContext';
 import dayjs from 'dayjs';

@@ -3,6 +3,7 @@ import { Card, Table, Button, Modal, Form, InputNumber, DatePicker, Select, Spac
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { adminService } from '../services/api';
 import { useMessage } from '../contexts/MessageContext';
+import TableActionDropdown from '../components/TableActionDropdown';
 import dayjs from 'dayjs';
 
 const { Option } = Select;
@@ -145,26 +146,34 @@ export default function AdminTariffs() {
         {
             title: 'Aksi',
             key: 'action',
+            width: 80,
             render: (_, record) => (
-                <Space>
-                    <Button
-                        icon={<EditOutlined />}
-                        onClick={() => handleEdit(record)}
-                    >
-                        Edit
-                    </Button>
-                    <Popconfirm
-                        title="Hapus tarif ini?"
-                        description="Tarif yang sudah digunakan tidak dapat dihapus"
-                        onConfirm={() => handleDelete(record.id)}
-                        okText="Ya"
-                        cancelText="Tidak"
-                    >
-                        <Button danger icon={<DeleteOutlined />}>
-                            Hapus
-                        </Button>
-                    </Popconfirm>
-                </Space>
+                <TableActionDropdown
+                    items={[
+                        {
+                            key: 'edit',
+                            label: 'Edit',
+                            icon: <EditOutlined />,
+                            onClick: () => handleEdit(record),
+                        },
+                        {
+                            key: 'delete',
+                            label: 'Hapus',
+                            icon: <DeleteOutlined />,
+                            danger: true,
+                            onClick: () => {
+                                Modal.confirm({
+                                    title: 'Hapus tarif ini?',
+                                    content: 'Tarif yang sudah digunakan tidak dapat dihapus',
+                                    okText: 'Ya',
+                                    cancelText: 'Tidak',
+                                    okType: 'danger',
+                                    onOk: () => handleDelete(record.id),
+                                });
+                            },
+                        },
+                    ]}
+                />
             ),
         },
     ];
@@ -183,6 +192,7 @@ export default function AdminTariffs() {
                 dataSource={tariffs}
                 rowKey="id"
                 loading={loading}
+                    scroll={{ x: 'max-content' }}
             />
 
             <Modal

@@ -3,6 +3,7 @@ import { Card, Table, Button, Modal, Form, Input, Select, Space, Popconfirm, Tag
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { adminService } from '../services/api';
 import { useMessage } from '../contexts/MessageContext';
+import TableActionDropdown from '../components/TableActionDropdown';
 
 const { Option } = Select;
 
@@ -102,25 +103,33 @@ export default function AdminRecipients() {
         {
             title: 'Aksi',
             key: 'action',
+            width: 80,
             render: (_, record) => (
-                <Space>
-                    <Button
-                        icon={<EditOutlined />}
-                        onClick={() => handleEdit(record)}
-                    >
-                        Edit
-                    </Button>
-                    <Popconfirm
-                        title="Hapus penerima ini?"
-                        onConfirm={() => handleDelete(record.id)}
-                        okText="Ya"
-                        cancelText="Tidak"
-                    >
-                        <Button danger icon={<DeleteOutlined />}>
-                            Hapus
-                        </Button>
-                    </Popconfirm>
-                </Space>
+                <TableActionDropdown
+                    items={[
+                        {
+                            key: 'edit',
+                            label: 'Edit',
+                            icon: <EditOutlined />,
+                            onClick: () => handleEdit(record),
+                        },
+                        {
+                            key: 'delete',
+                            label: 'Hapus',
+                            icon: <DeleteOutlined />,
+                            danger: true,
+                            onClick: () => {
+                                Modal.confirm({
+                                    title: 'Hapus penerima ini?',
+                                    okText: 'Ya',
+                                    cancelText: 'Tidak',
+                                    okType: 'danger',
+                                    onOk: () => handleDelete(record.id),
+                                });
+                            },
+                        },
+                    ]}
+                />
             ),
         },
     ];
@@ -139,6 +148,12 @@ export default function AdminRecipients() {
                 dataSource={recipients}
                 rowKey="id"
                 loading={loading}
+                scroll={{ x: 'max-content' }}
+                pagination={{
+                    pageSize: 20,
+                    showSizeChanger: true,
+                    showTotal: (total) => `Total ${total} penerima`,
+                }}
             />
 
             <Modal

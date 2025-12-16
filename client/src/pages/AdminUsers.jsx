@@ -3,6 +3,7 @@ import { Card, Table, Button, Modal, Form, Input, Select, Popconfirm, Tag, Space
 import { PlusOutlined, EditOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons';
 import { adminService } from '../services/api';
 import { useMessage } from '../contexts/MessageContext';
+import TableActionDropdown from '../components/TableActionDropdown';
 
 const { Option } = Select;
 
@@ -130,26 +131,34 @@ export default function AdminUsers() {
         {
             title: 'Aksi',
             key: 'action',
+            width: 80,
             render: (_, record) => (
-                <Space>
-                    <Button
-                        icon={<EditOutlined />}
-                        onClick={() => handleEdit(record)}
-                    >
-                        Edit
-                    </Button>
-                    <Popconfirm
-                        title="Hapus pengguna ini?"
-                        description="Tindakan ini tidak dapat dibatalkan."
-                        onConfirm={() => handleDelete(record.id)}
-                        okText="Ya"
-                        cancelText="Tidak"
-                    >
-                        <Button danger icon={<DeleteOutlined />}>
-                            Hapus
-                        </Button>
-                    </Popconfirm>
-                </Space>
+                <TableActionDropdown
+                    items={[
+                        {
+                            key: 'edit',
+                            label: 'Edit',
+                            icon: <EditOutlined />,
+                            onClick: () => handleEdit(record),
+                        },
+                        {
+                            key: 'delete',
+                            label: 'Hapus',
+                            icon: <DeleteOutlined />,
+                            danger: true,
+                            onClick: () => {
+                                Modal.confirm({
+                                    title: 'Hapus pengguna ini?',
+                                    content: 'Tindakan ini tidak dapat dibatalkan.',
+                                    okText: 'Ya',
+                                    cancelText: 'Tidak',
+                                    okType: 'danger',
+                                    onOk: () => handleDelete(record.id),
+                                });
+                            },
+                        },
+                    ]}
+                />
             ),
         },
     ];
@@ -168,7 +177,8 @@ export default function AdminUsers() {
                 dataSource={users}
                 rowKey="id"
                 loading={loading}
-                pagination={{
+                    scroll={{ x: 'max-content' }}
+                    pagination={{
                     pageSize: 20,
                     showSizeChanger: true,
                     showTotal: (total) => `Total ${total} pengguna`,
