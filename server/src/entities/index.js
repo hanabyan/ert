@@ -92,12 +92,14 @@ export class PaymentItem {
 
 // Tariff Entity
 export class Tariff {
-    constructor({ id, amount, valid_from, valid_to, property_type, created_at, updated_at }) {
+    constructor({ id, amount, valid_from, valid_to, property_type, tariff_type, description, created_at, updated_at }) {
         this.id = id;
         this.amount = parseFloat(amount);
         this.validFrom = valid_from;
         this.validTo = valid_to;
         this.propertyType = property_type;
+        this.tariffType = tariff_type || 'rutin';
+        this.description = description;
         this.createdAt = created_at;
         this.updatedAt = updated_at;
     }
@@ -153,3 +155,5 @@ export class AuditLog {
         this.createdAt = created_at;
     }
 }
+
+export * from './TariffComponentEntities.js';

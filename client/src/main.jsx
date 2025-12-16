@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ConfigProvider } from 'antd'
+import { ConfigProvider, App as AntdApp } from 'antd'
 import idID from 'antd/locale/id_ID'
 import dayjs from 'dayjs'
 import 'dayjs/locale/id'
@@ -20,7 +20,9 @@ createRoot(document.getElementById('root')).render(
                 },
             }}
         >
-            <App />
+            <AntdApp component={false}>
+                <App />
+            </AntdApp>
         </ConfigProvider>
     </StrictMode>,
 )

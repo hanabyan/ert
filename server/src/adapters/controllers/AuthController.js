@@ -1,11 +1,13 @@
 import { UserRepository } from '../repositories/UserRepository.js';
 import { AuditRepository } from '../repositories/AuditRepository.js';
+import { ChangePasswordUseCase } from '../../use_cases/ChangePasswordUseCase.js';
 import jwt from 'jsonwebtoken';
 
 export class AuthController {
     constructor() {
         this.userRepo = new UserRepository();
         this.auditRepo = new AuditRepository();
+        this.changePasswordUseCase = new ChangePasswordUseCase();
     }
 
     async login(req, res) {
@@ -123,6 +125,37 @@ export class AuthController {
             });
         } catch (error) {
             console.error('Update profile error:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    async changePassword(req, res) {
+        try {
+            const { currentPassword, newPassword, confirmPassword } = req.body;
+            const userId = req.user.userId;
+
+            // Validation
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                return res.status(400).json({ error: 'Semua field wajib diisi' });
+            }
+
+            if (newPassword !== confirmPassword) {
+                return res.status(400).json({ error: 'Konfirmasi password tidak sesuai' });
+            }
+
+            // Execute use case
+            const result = await this.changePasswordUseCase.execute(
+                userId,
+                currentPassword,
+                newPassword
+            );
+
+            res.json(result);
+        } catch (error) {
+            console.error('Change password error:', error);
+            if (error.message.includes('tidak sesuai') || error.message.includes('tidak boleh')) {
+                return res.status(400).json({ error: error.message });
+            }
             res.status(500).json({ error: 'Internal server error' });
         }
     }

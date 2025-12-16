@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Descriptions, Table, Tag, Tabs, Form, Input, Button, message, Modal } from 'antd';
-import { UserOutlined, EditOutlined, SaveOutlined } from '@ant-design/icons';
+import { UserOutlined, EditOutlined, SaveOutlined, LockOutlined } from '@ant-design/icons';
 import { authService } from '../services/api';
 import dayjs from 'dayjs';
 
@@ -9,7 +9,9 @@ export default function UserProfile() {
     const [activity, setActivity] = useState([]);
     const [loading, setLoading] = useState(false);
     const [editModalVisible, setEditModalVisible] = useState(false);
+    const [passwordModalVisible, setPasswordModalVisible] = useState(false);
     const [form] = Form.useForm();
+    const [passwordForm] = Form.useForm();
 
     useEffect(() => {
         fetchData();
@@ -61,6 +63,31 @@ export default function UserProfile() {
         }
     };
 
+    const handleChangePassword = async () => {
+        try {
+            const values = await passwordForm.validateFields();
+            setLoading(true);
+            
+            await authService.changePassword(
+                values.currentPassword,
+                values.newPassword,
+                values.confirmPassword
+            );
+            
+            message.success('Password berhasil diubah');
+            setPasswordModalVisible(false);
+            passwordForm.resetFields();
+        } catch (error) {
+            if (error.errorFields) {
+                // Validation error
+                return;
+            }
+            message.error(error.response?.data?.error || 'Gagal mengubah password');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const auditColumns = [
         {
             title: 'Waktu',
@@ -105,6 +132,14 @@ export default function UserProfile() {
             children: (
                 <>
                     <div style={{ marginBottom: 16, textAlign: 'right' }}>
+                        <Button 
+                            type="default" 
+                            icon={<LockOutlined />}
+                            onClick={() => setPasswordModalVisible(true)}
+                            style={{ marginRight: 8 }}
+                        >
+                            Ubah Password
+                        </Button>
                         <Button 
                             type="primary" 
                             icon={<EditOutlined />}
@@ -216,6 +251,82 @@ export default function UserProfile() {
                         ]}
                     >
                         <Input placeholder="email@example.com" />
+                    </Form.Item>
+                </Form>
+            </Modal>
+
+            {/* Change Password Modal */}
+            <Modal
+                title={
+                    <span>
+                        <LockOutlined /> Ubah Password
+                    </span>
+                }
+                open={passwordModalVisible}
+                onCancel={() => {
+                    setPasswordModalVisible(false);
+                    passwordForm.resetFields();
+                }}
+                footer={[
+                    <Button key="cancel" onClick={() => {
+                        setPasswordModalVisible(false);
+                        passwordForm.resetFields();
+                    }}>
+                        Batal
+                    </Button>,
+                    <Button 
+                        key="save" 
+                        type="primary" 
+                        icon={<SaveOutlined />}
+                        loading={loading}
+                        onClick={handleChangePassword}
+                    >
+                        Ubah Password
+                    </Button>,
+                ]}
+            >
+                <Form
+                    form={passwordForm}
+                    layout="vertical"
+                >
+                    <Form.Item
+                        label="Password Lama"
+                        name="currentPassword"
+                        rules={[
+                            { required: true, message: 'Password lama wajib diisi' }
+                        ]}
+                    >
+                        <Input.Password placeholder="Masukkan password lama" />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Password Baru"
+                        name="newPassword"
+                        rules={[
+                            { required: true, message: 'Password baru wajib diisi' },
+                            { min: 6, message: 'Password minimal 6 karakter' }
+                        ]}
+                    >
+                        <Input.Password placeholder="Masukkan password baru" />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Konfirmasi Password Baru"
+                        name="confirmPassword"
+                        dependencies={['newPassword']}
+                        rules={[
+                            { required: true, message: 'Konfirmasi password wajib diisi' },
+                            ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                    if (!value || getFieldValue('newPassword') === value) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(new Error('Konfirmasi password tidak sesuai'));
+                                },
+                            }),
+                        ]}
+                    >
+                        <Input.Password placeholder="Masukkan ulang password baru" />
                     </Form.Item>
                 </Form>
             </Modal>

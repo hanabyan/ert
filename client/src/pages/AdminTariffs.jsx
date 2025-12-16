@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Modal, Form, InputNumber, DatePicker, Select, Space, message, Popconfirm } from 'antd';
+import { Card, Table, Button, Modal, Form, InputNumber, DatePicker, Select, Space, message, Popconfirm, Input, Tag } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { adminService } from '../services/api';
 import dayjs from 'dayjs';
 
 const { Option } = Select;
+const { TextArea } = Input;
 
 export default function AdminTariffs() {
     const [tariffs, setTariffs] = useState([]);
@@ -12,6 +13,7 @@ export default function AdminTariffs() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingTariff, setEditingTariff] = useState(null);
     const [form] = Form.useForm();
+    const [tariffType, setTariffType] = useState('rutin');
 
     useEffect(() => {
         fetchTariffs();
@@ -32,15 +34,18 @@ export default function AdminTariffs() {
     const handleAdd = () => {
         setEditingTariff(null);
         form.resetFields();
+        setTariffType('rutin');
         setModalVisible(true);
     };
 
     const handleEdit = (tariff) => {
         setEditingTariff(tariff);
+        setTariffType(tariff.tariffType || 'rutin');
         form.setFieldsValue({
             ...tariff,
             validFrom: dayjs(tariff.validFrom),
             validTo: tariff.validTo ? dayjs(tariff.validTo) : null,
+            tariffType: tariff.tariffType || 'rutin',
         });
         setModalVisible(true);
     };
@@ -62,6 +67,8 @@ export default function AdminTariffs() {
                 validFrom: values.validFrom.format('YYYY-MM-DD'),
                 validTo: values.validTo ? values.validTo.format('YYYY-MM-DD') : null,
                 propertyType: values.propertyType,
+                tariffType: values.tariffType || 'rutin',
+                description: values.description || null,
             };
 
             if (editingTariff) {
@@ -75,7 +82,7 @@ export default function AdminTariffs() {
             setModalVisible(false);
             fetchTariffs();
         } catch (error) {
-            message.error('Gagal menyimpan tarif');
+            message.error(error.response?.data?.error || 'Gagal menyimpan tarif');
         }
     };
 
@@ -91,6 +98,22 @@ export default function AdminTariffs() {
             dataIndex: 'amount',
             key: 'amount',
             render: (amount) => `Rp ${amount.toLocaleString('id-ID')}`,
+        },
+        {
+            title: 'Tipe',
+            dataIndex: 'tariffType',
+            key: 'tariffType',
+            render: (type) => (
+                <Tag color={type === 'rutin' ? 'blue' : 'orange'}>
+                    {type === 'rutin' ? 'RUTIN' : 'INSIDENTIL'}
+                </Tag>
+            ),
+        },
+        {
+            title: 'Deskripsi',
+            dataIndex: 'description',
+            key: 'description',
+            render: (desc) => desc || '-',
         },
         {
             title: 'Berlaku Dari',
@@ -146,7 +169,7 @@ export default function AdminTariffs() {
 
     return (
         <Card
-            title="Kelola Tarif Iuran"
+            title="Kelola Tarif Dasar"
             extra={
                 <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
                     Tambah Tarif
@@ -171,6 +194,40 @@ export default function AdminTariffs() {
             >
                 <Form form={form} layout="vertical" onFinish={handleSubmit}>
                     <Form.Item
+                        name="tariffType"
+                        label="Tipe Tarif"
+                        rules={[{ required: true, message: 'Pilih tipe tarif!' }]}
+                        initialValue="rutin"
+                    >
+                        <Select onChange={(value) => setTariffType(value)}>
+                            <Option value="rutin">Rutin (Iuran Bulanan)</Option>
+                            <Option value="insidentil">Insidentil (Sementara)</Option>
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        name="description"
+                        label="Deskripsi"
+                        rules={[
+                            { 
+                                required: tariffType === 'insidentil', 
+                                message: 'Deskripsi wajib untuk tarif insidentil!' 
+                            }
+                        ]}
+                        help={tariffType === 'insidentil' ? 'Wajib diisi untuk tarif insidentil' : 'Opsional - untuk keterangan tambahan'}
+                    >
+                        <TextArea 
+                            rows={3} 
+                            placeholder={
+                                tariffType === 'insidentil' 
+                                    ? "Contoh: Sumbangan 17 Agustus, Renovasi Pos Satpam, dll"
+                                    : "Contoh: Iuran kebersihan bulanan, Iuran keamanan, dll (opsional)"
+                            }
+                        />
+                    </Form.Item>
+
+
+                    <Form.Item
                         name="amount"
                         label="Jumlah Tarif"
                         rules={[{ required: true, message: 'Masukkan jumlah tarif!' }]}
@@ -194,7 +251,7 @@ export default function AdminTariffs() {
                     <Form.Item
                         name="validTo"
                         label="Berlaku Sampai (Opsional)"
-                        help="Kosongkan jika tidak ada batas waktu"
+                        help={tariffType === 'insidentil' ? 'Disarankan diisi untuk tarif insidentil' : 'Kosongkan jika tidak ada batas waktu'}
                     >
                         <DatePicker style={{ width: '100%' }} />
                     </Form.Item>
@@ -216,9 +273,10 @@ export default function AdminTariffs() {
                 <div style={{ marginTop: 16, padding: 12, background: '#f0f2f5', borderRadius: 4 }}>
                     <strong>Catatan:</strong>
                     <ul style={{ marginBottom: 0, paddingLeft: 20 }}>
+                        <li><strong>Rutin:</strong> Iuran bulanan reguler (kebersihan, keamanan, dll)</li>
+                        <li><strong>Insidentil:</strong> Iuran sementara (sumbangan, renovasi, dll) - wajib ada deskripsi</li>
                         <li>Tarif baru akan berlaku untuk pembayaran sesuai periode yang ditentukan</li>
                         <li>Pastikan tidak ada tumpang tindih periode untuk tipe properti yang sama</li>
-                        <li>Tarif yang sudah digunakan dalam transaksi tidak dapat dihapus</li>
                     </ul>
                 </div>
             </Modal>

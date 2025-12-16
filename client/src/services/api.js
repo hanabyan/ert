@@ -57,6 +57,15 @@ export const authService = {
     updateProfile: async (profileData) => {
         const { data } = await api.put('/auth/profile', profileData);
         return data;
+    },
+
+    changePassword: async (currentPassword, newPassword, confirmPassword) => {
+        const { data } = await api.post('/auth/change-password', {
+            currentPassword,
+            newPassword,
+            confirmPassword
+        });
+        return data;
     }
 };
 
@@ -95,7 +104,15 @@ export const dashboardService = {
             params: { year, month }
         });
         return data;
-    }
+    },
+};
+
+// Property Service
+export const propertyService = {
+    getMyProperties: async () => {
+        const { data } = await api.get('/properties/my'); // Requires authentication
+        return data;
+    },
 };
 
 // Payment Service
@@ -262,6 +279,99 @@ export const adminService = {
                 'Content-Type': 'multipart/form-data'
             }
         });
+        return data;
+    },
+};
+
+// Component Subscription Service
+export const componentService = {
+    // Warga endpoints
+    getAvailableComponents: async () => {
+        const { data } = await api.get('/components/available');
+        return data;
+    },
+
+    subscribe: async (subscriptionData) => {
+        const { data } = await api.post('/components/subscribe', subscriptionData);
+        return data;
+    },
+
+    unsubscribe: async (subscriptionId, endDate) => {
+        const { data } = await api.post(`/components/unsubscribe/${subscriptionId}`, { endDate });
+        return data;
+    },
+
+    getMySubscriptions: async (propertyId) => {
+        const { data } = await api.get(`/components/subscriptions/${propertyId}`);
+        return data;
+    },
+
+    // Admin endpoints
+    getPendingRequests: async () => {
+        const { data } = await api.get('/admin/component-requests/pending');
+        return data;
+    },
+
+    approveRequest: async (requestId) => {
+        const { data } = await api.post(`/admin/component-requests/${requestId}/approve`);
+        return data;
+    },
+
+    rejectRequest: async (requestId, reason) => {
+        const { data } = await api.post(`/admin/component-requests/${requestId}/reject`, { reason });
+        return data;
+    },
+
+    // Admin component management
+    getComponents: async () => {
+        const { data } = await api.get('/admin/components');
+        return data;
+    },
+
+    getComponentWithRates: async (componentId) => {
+        const { data } = await api.get(`/admin/components/${componentId}`);
+        return data;
+    },
+
+    addComponent: async (componentData) => {
+        const { data } = await api.post('/admin/components', componentData);
+        return data;
+    },
+
+    updateComponent: async (componentId, componentData) => {
+        const { data } = await api.put(`/admin/components/${componentId}`, componentData);
+        return data;
+    },
+
+    addComponentRate: async (rateData) => {
+        const { data } = await api.post('/admin/component-rates', rateData);
+        return data;
+    },
+
+    updateComponentRate: async (rateId, rateData) => {
+        const { data } = await api.put(`/admin/component-rates/${rateId}`, rateData);
+        return data;
+    },
+
+    deleteComponentRate: async (rateId) => {
+        const { data } = await api.delete(`/admin/component-rates/${rateId}`);
+        return data;
+    },
+
+    // Admin Bulk Operations
+    bulkSubscribe: async (propertyIds, componentId, action, startDate, endDate) => {
+        const { data } = await api.post('/admin/component-subscriptions/bulk', { 
+            propertyIds, 
+            componentId, 
+            action,
+            startDate,
+            endDate
+        });
+        return data;
+    },
+
+    getAllActiveSubscriptions: async () => {
+        const { data } = await api.get('/admin/component-subscriptions/active');
         return data;
     },
 };

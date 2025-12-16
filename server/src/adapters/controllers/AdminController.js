@@ -16,13 +16,13 @@ export class AdminController {
     // Tariff Management
     async addTariff(req, res) {
         try {
-            const { amount, validFrom, validTo, propertyType } = req.body;
+            const { amount, validFrom, validTo, propertyType, tariffType, description } = req.body;
 
             if (!amount || !validFrom) {
                 return res.status(400).json({ error: 'Amount and validFrom required' });
             }
 
-            const id = await this.tariffUseCase.addTariff(amount, validFrom, validTo, propertyType);
+            const id = await this.tariffUseCase.addTariff(amount, validFrom, validTo, propertyType, tariffType, description);
 
             res.status(201).json({ id, message: 'Tariff added successfully' });
         } catch (error) {
@@ -34,9 +34,9 @@ export class AdminController {
     async updateTariff(req, res) {
         try {
             const { id } = req.params;
-            const { amount, validFrom, validTo, propertyType } = req.body;
+            const { amount, validFrom, validTo, propertyType, tariffType, description } = req.body;
 
-            await this.tariffUseCase.updateTariff(id, amount, validFrom, validTo, propertyType);
+            await this.tariffUseCase.updateTariff(id, amount, validFrom, validTo, propertyType, tariffType, description);
 
             res.json({ message: 'Tariff updated successfully' });
         } catch (error) {

@@ -177,7 +177,7 @@ export default function BatchPayment() {
                     )}
                 />
 
-                <Space direction="vertical" style={{ width: '100%', marginTop: 16 }}>
+                <Space orientation="vertical" style={{ width: '100%', marginTop: 16 }}>
                     <Upload {...uploadProps}>
                         <Button icon={<UploadOutlined />}>Upload Bukti Pembayaran</Button>
                     </Upload>

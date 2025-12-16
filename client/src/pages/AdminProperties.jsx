@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Modal, Form, Input, Select, Space, message, Popconfirm, Tag, Drawer, List, Avatar, DatePicker } from 'antd';
+import { Card, Table, Button, Modal, Form, Input, Select, Space, message, Popconfirm, Tag, Drawer, Avatar, DatePicker, Flex } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, HomeOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons';
 import { adminService } from '../services/api';
 import dayjs from 'dayjs';
@@ -22,10 +22,12 @@ export default function AdminProperties() {
     const [userModalVisible, setUserModalVisible] = useState(false);
     const [editingPropertyUser, setEditingPropertyUser] = useState(null);
     const [userForm] = Form.useForm();
+    const [allPropertyUsers, setAllPropertyUsers] = useState([]);
 
     useEffect(() => {
         fetchProperties();
         fetchUsers();
+        fetchAllPropertyUsers();
     }, []);
 
     const fetchProperties = async () => {
@@ -49,6 +51,26 @@ export default function AdminProperties() {
         }
     };
 
+    const fetchAllPropertyUsers = async () => {
+        try {
+            // Fetch all property-user relationships
+            const allProps = await adminService.getProperties();
+            const allUsersPromises = allProps.map(prop => 
+                adminService.getPropertyUsers(prop.id).catch(() => [])
+            );
+            const results = await Promise.all(allUsersPromises);
+            
+            // Create a map of propertyId -> users
+            const usersMap = {};
+            allProps.forEach((prop, index) => {
+                usersMap[prop.id] = results[index] || [];
+            });
+            setAllPropertyUsers(usersMap);
+        } catch (error) {
+            console.error('Failed to fetch property users:', error);
+        }
+    };
+
     const handleAdd = () => {
         setEditingProperty(null);
         form.resetFields();
@@ -61,10 +83,9 @@ export default function AdminProperties() {
             block: property.block,
             number: property.number,
             type: property.type,
-            ownerId: property.ownerId,
             bastDate: property.bastDate ? dayjs(property.bastDate) : null,
         });
-        setModalVisible(true);
+        setModalVisible(true)
     };
 
     const handleDelete = async (id) => {
@@ -81,7 +102,6 @@ export default function AdminProperties() {
         try {
             const propertyData = {
                 type: values.type,
-                ownerId: values.ownerId || null,
                 bastDate: values.bastDate ? values.bastDate.format('YYYY-MM-DD') : null,
             };
 
@@ -145,6 +165,7 @@ export default function AdminProperties() {
             await adminService.deletePropertyUser(id);
             message.success('Penghuni berhasil dihapus');
             await fetchPropertyUsers(selectedProperty.id);
+            await fetchAllPropertyUsers(); // Refresh all property users
         } catch (error) {
             message.error('Gagal menghapus penghuni');
         }
@@ -162,6 +183,7 @@ export default function AdminProperties() {
             setUserModalVisible(false);
             userForm.resetFields();
             await fetchPropertyUsers(selectedProperty.id);
+            await fetchAllPropertyUsers(); // Refresh all property users
         } catch (error) {
             message.error(error.response?.data?.error || 'Gagal menyimpan penghuni');
         }
@@ -231,18 +253,32 @@ export default function AdminProperties() {
             onFilter: (value, record) => record.type === value,
         },
         {
-            title: 'Pemilik Utama',
-            dataIndex: 'ownerId',
-            key: 'ownerId',
-            render: (ownerId) => {
-                if (!ownerId) return <Tag>Belum ada pemilik</Tag>;
-                const owner = users.find(u => u.id === ownerId);
-                return owner ? (
-                    <Space>
-                        <UserOutlined />
-                        {owner.full_name}
-                    </Space>
-                ) : <Tag color="orange">ID: {ownerId}</Tag>;
+            title: 'Penghuni',
+            key: 'occupants',
+            render: (_, record) => {
+                const occupants = allPropertyUsers[record.id] || [];
+                if (occupants.length === 0) {
+                    return <Tag color="default">Belum ada penghuni</Tag>;
+                }
+                
+                return (
+                    <div>
+                        <div style={{ marginBottom: 4 }}>
+                            <Tag color="blue">{occupants.length} penghuni</Tag>
+                        </div>
+                        {occupants.slice(0, 2).map((occ, idx) => (
+                            <div key={idx} style={{ fontSize: '12px', color: '#666' }}>
+                                <Tag color={getRelationTypeColor(occ.relation_type)} size="small">
+                                    {getRelationTypeText(occ.relation_type)}
+                                </Tag>
+                                {occ.full_name}
+                            </div>
+                        ))}
+                        {occupants.length > 2 && (
+                            <div style={{ fontSize: '12px', color: '#999' }}>+{occupants.length - 2} lainnya</div>
+                        )}
+                    </div>
+                );
             },
         },
         {
@@ -358,27 +394,6 @@ export default function AdminProperties() {
                         </Form.Item>
 
                         <Form.Item
-                            name="ownerId"
-                            label="Pemilik Utama (Opsional)"
-                            help="Pemilik utama untuk keperluan legacy. Gunakan menu 'Penghuni' untuk mengelola semua penghuni."
-                        >
-                            <Select
-                                placeholder="Pilih pemilik"
-                                allowClear
-                                showSearch
-                                filterOption={(input, option) =>
-                                    option.children.toLowerCase().includes(input.toLowerCase())
-                                }
-                            >
-                                {users.map(user => (
-                                    <Option key={user.id} value={user.id}>
-                                        {user.full_name} ({user.username})
-                                    </Option>
-                                ))}
-                            </Select>
-                        </Form.Item>
-
-                        <Form.Item
                             name="bastDate"
                             label="Tanggal BAST (Opsional)"
                             help="Tanggal Berita Acara Serah Terima - sejak kapan properti mulai wajib bayar iuran"
@@ -410,7 +425,7 @@ export default function AdminProperties() {
                     </Space>
                 }
                 placement="right"
-                width={600}
+                size="large"
                 onClose={() => setUsersDrawerVisible(false)}
                 open={usersDrawerVisible}
                 extra={
@@ -419,53 +434,57 @@ export default function AdminProperties() {
                     </Button>
                 }
             >
-                <List
-                    loading={loadingPropertyUsers}
-                    dataSource={propertyUsers}
-                    locale={{ emptyText: 'Belum ada penghuni' }}
-                    renderItem={(item) => (
-                        <List.Item
-                            actions={[
-                                <Button
-                                    type="link"
-                                    icon={<EditOutlined />}
-                                    onClick={() => handleEditUser(item)}
-                                >
-                                    Edit
-                                </Button>,
-                                <Popconfirm
-                                    title="Hapus penghuni ini?"
-                                    onConfirm={() => handleDeleteUser(item.id)}
-                                    okText="Ya"
-                                    cancelText="Tidak"
-                                >
-                                    <Button type="link" danger icon={<DeleteOutlined />}>
-                                        Hapus
-                                    </Button>
-                                </Popconfirm>,
-                            ]}
-                        >
-                            <List.Item.Meta
-                                avatar={<Avatar icon={<UserOutlined />} />}
-                                title={
+                <Flex vertical gap="middle">
+                    {loadingPropertyUsers ? (
+                        <div style={{ textAlign: 'center', padding: '40px 0' }}>Loading...</div>
+                    ) : propertyUsers.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '40px 0', color: '#999' }}>Belum ada penghuni</div>
+                    ) : (
+                        propertyUsers.map((item) => (
+                            <Card key={item.id} size="small">
+                                <Flex justify="space-between" align="start">
+                                    <Flex gap="middle" align="start">
+                                        <Avatar icon={<UserOutlined />} />
+                                        <div>
+                                            <div>
+                                                <Space>
+                                                    <strong>{item.full_name}</strong>
+                                                    <Tag color={getRelationTypeColor(item.relation_type)}>
+                                                        {getRelationTypeText(item.relation_type)}
+                                                    </Tag>
+                                                </Space>
+                                            </div>
+                                            <div style={{ marginTop: 8, fontSize: '12px', color: '#666' }}>
+                                                <div>Username: {item.username}</div>
+                                                {item.phone && <div>HP: {item.phone}</div>}
+                                                {item.email && <div>Email: {item.email}</div>}
+                                            </div>
+                                        </div>
+                                    </Flex>
                                     <Space>
-                                        <strong>{item.full_name}</strong>
-                                        <Tag color={getRelationTypeColor(item.relation_type)}>
-                                            {getRelationTypeText(item.relation_type)}
-                                        </Tag>
+                                        <Button
+                                            type="link"
+                                            icon={<EditOutlined />}
+                                            onClick={() => handleEditUser(item)}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Popconfirm
+                                            title="Hapus penghuni ini?"
+                                            onConfirm={() => handleDeleteUser(item.id)}
+                                            okText="Ya"
+                                            cancelText="Tidak"
+                                        >
+                                            <Button type="link" danger icon={<DeleteOutlined />}>
+                                                Hapus
+                                            </Button>
+                                        </Popconfirm>
                                     </Space>
-                                }
-                                description={
-                                    <div>
-                                        <div>Username: {item.username}</div>
-                                        {item.phone && <div>HP: {item.phone}</div>}
-                                        {item.email && <div>Email: {item.email}</div>}
-                                    </div>
-                                }
-                            />
-                        </List.Item>
+                                </Flex>
+                            </Card>
+                        ))
                     )}
-                />
+                </Flex>
 
                 {/* Add/Edit User Modal */}
                 <Modal
@@ -494,11 +513,11 @@ export default function AdminProperties() {
                                 disabled={!!editingPropertyUser}
                                 showSearch
                                 filterOption={(input, option) =>
-                                    option.children.toLowerCase().includes(input.toLowerCase())
+                                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                                 }
                             >
                                 {users.map(user => (
-                                    <Option key={user.id} value={user.id}>
+                                    <Option key={user.id} value={user.id} label={`${user.full_name} (${user.username})`}>
                                         {user.full_name} ({user.username})
                                     </Option>
                                 ))}

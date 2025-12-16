@@ -7,6 +7,7 @@ import { DashboardController } from '../../adapters/controllers/DashboardControl
 import { ExpenseController } from '../../adapters/controllers/ExpenseController.js';
 import { AdminController } from '../../adapters/controllers/AdminController.js';
 import { UserController } from '../../adapters/controllers/UserController.js';
+import { ComponentSubscriptionController } from '../../adapters/controllers/ComponentSubscriptionController.js';
 import { authMiddleware, adminOnly } from './middleware.js';
 
 const router = express.Router();
@@ -45,6 +46,7 @@ const dashboardController = new DashboardController();
 const expenseController = new ExpenseController();
 const adminController = new AdminController();
 const userController = new UserController();
+const componentController = new ComponentSubscriptionController();
 
 // Public routes
 router.post('/auth/login', (req, res) => authController.login(req, res));
@@ -57,17 +59,24 @@ router.get('/dashboard/overview/:block/:number', (req, res) => dashboardControll
 router.get('/dashboard/detail/:block/:number', (req, res) => dashboardController.getDetailHistory(req, res));
 router.get('/dashboard/financial', (req, res) => dashboardController.getFinancialSummary(req, res));
 
+// Public component route (for browsing available components)
+router.get('/components/available', (req, res) => componentController.getAvailableComponents(req, res));
+
 // Protected routes (require authentication)
 router.use(authMiddleware);
 
 // User profile
 router.get('/auth/profile', (req, res) => authController.getProfile(req, res));
 router.put('/auth/profile', (req, res) => authController.updateProfile(req, res));
+router.post('/auth/change-password', (req, res) => authController.changePassword(req, res));
 router.get('/auth/activity', (req, res) => authController.getActivity(req, res));
 
 // Payment routes (warga)
 router.post('/payments', (req, res) => paymentController.submitPayment(req, res));
 router.get('/payments/my', (req, res) => paymentController.getUserPayments(req, res));
+
+// User properties
+router.get('/properties/my', (req, res) => userController.getMyProperties(req, res));
 
 // Admin-only routes
 router.use(adminOnly);
@@ -115,5 +124,27 @@ router.get('/admin/users/:userId/audit', (req, res) => adminController.getUserAu
 
 // Admin create payment for user
 router.post('/admin/payments/create', upload.single('proofImage'), (req, res) => adminController.createPaymentForUser(req, res));
+
+// Component Subscription routes (Warga) - Requires authentication
+router.post('/components/subscribe', (req, res) => componentController.requestSubscription(req, res));
+router.post('/components/unsubscribe/:subscriptionId', (req, res) => componentController.requestUnsubscription(req, res));
+router.get('/components/subscriptions/:propertyId', (req, res) => componentController.getMySubscriptions(req, res));
+
+// Component Subscription routes (Admin)
+router.get('/admin/component-requests/pending', adminOnly, (req, res) => componentController.getPendingRequests(req, res));
+router.post('/admin/component-requests/:id/approve', adminOnly, (req, res) => componentController.approveRequest(req, res));
+router.post('/admin/component-requests/:id/reject', adminOnly, (req, res) => componentController.rejectRequest(req, res));
+
+// Component Management routes (Admin)
+router.get('/admin/components', adminOnly, (req, res) => componentController.getAllComponents(req, res));
+router.get('/admin/components/:id', adminOnly, (req, res) => componentController.getComponentWithRates(req, res));
+router.post('/admin/components', adminOnly, (req, res) => componentController.addComponent(req, res));
+router.put('/admin/components/:id', adminOnly, (req, res) => componentController.updateComponent(req, res));
+router.post('/admin/component-rates', adminOnly, (req, res) => componentController.addComponentRate(req, res));
+    router.put('/admin/component-rates/:id', adminOnly, (req, res) => componentController.updateComponentRate(req, res));
+
+    // Bulk Subscription Management (Admin)
+    router.post('/admin/component-subscriptions/bulk', adminOnly, (req, res) => componentController.bulkSubscribe(req, res));
+    router.get('/admin/component-subscriptions/active', adminOnly, (req, res) => componentController.getAllActiveSubscriptions(req, res));
 
 export default router;

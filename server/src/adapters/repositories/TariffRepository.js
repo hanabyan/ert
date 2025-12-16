@@ -14,31 +14,32 @@ export class TariffRepository {
         return rows[0] ? new Tariff(rows[0]) : null;
     }
 
-    async findActiveForDate(date, propertyType = 'all') {
+    async findActiveForDate(date, propertyType = 'all', tariffType = 'rutin') {
         const [rows] = await pool.query(
             `SELECT * FROM tariffs 
        WHERE valid_from <= ? 
        AND (valid_to IS NULL OR valid_to >= ?)
        AND (property_type = ? OR property_type = 'all')
+       AND tariff_type = ?
        ORDER BY valid_from DESC
        LIMIT 1`,
-            [date, date, propertyType]
+            [date, date, propertyType, tariffType]
         );
         return rows[0] ? new Tariff(rows[0]) : null;
     }
 
-    async create(amount, validFrom, validTo, propertyType = 'all') {
+    async create(amount, validFrom, validTo, propertyType = 'all', tariffType = 'rutin', description = null) {
         const [result] = await pool.query(
-            'INSERT INTO tariffs (amount, valid_from, valid_to, property_type) VALUES (?, ?, ?, ?)',
-            [amount, validFrom, validTo, propertyType]
+            'INSERT INTO tariffs (amount, valid_from, valid_to, property_type, tariff_type, description) VALUES (?, ?, ?, ?, ?, ?)',
+            [amount, validFrom, validTo, propertyType, tariffType, description]
         );
         return result.insertId;
     }
 
-    async update(id, amount, validFrom, validTo, propertyType) {
+    async update(id, amount, validFrom, validTo, propertyType, tariffType, description) {
         await pool.query(
-            'UPDATE tariffs SET amount = ?, valid_from = ?, valid_to = ?, property_type = ?, updated_at = NOW() WHERE id = ?',
-            [amount, validFrom, validTo, propertyType, id]
+            'UPDATE tariffs SET amount = ?, valid_from = ?, valid_to = ?, property_type = ?, tariff_type = ?, description = ?, updated_at = NOW() WHERE id = ?',
+            [amount, validFrom, validTo, propertyType, tariffType, description, id]
         );
     }
 

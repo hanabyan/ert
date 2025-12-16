@@ -56,4 +56,23 @@ export class PropertyUserRepository {
         );
         return rows.length > 0;
     }
+
+    // Get all properties with details for a specific user
+    async findPropertiesWithDetailsByUser(userId) {
+        const [rows] = await pool.query(`
+            SELECT 
+                p.id, 
+                p.block, 
+                p.number, 
+                p.type, 
+                p.bast_date,
+                pu.relation_type,
+                pu.id as property_user_id
+            FROM property_users pu
+            JOIN properties p ON pu.property_id = p.id
+            WHERE pu.user_id = ?
+            ORDER BY p.block, p.number
+        `, [userId]);
+        return rows;
+    }
 }

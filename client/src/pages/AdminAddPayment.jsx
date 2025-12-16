@@ -239,12 +239,12 @@ export default function AdminAddPayment() {
                                     placeholder="Pilih properti terlebih dahulu"
                                     showSearch
                                     filterOption={(input, option) =>
-                                        option.children.toLowerCase().includes(input.toLowerCase())
+                                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                                     }
                                     onChange={handlePropertyChange}
                                 >
                                     {properties.map(prop => (
-                                        <Option key={prop.id} value={prop.id}>
+                                        <Option key={prop.id} value={prop.id} label={`${prop.block}${prop.number} - ${prop.type}`}>
                                             {prop.block}{prop.number} - {prop.type}
                                         </Option>
                                     ))}
@@ -262,12 +262,12 @@ export default function AdminAddPayment() {
                                     showSearch
                                     disabled={!selectedProperty || propertyUsers.length === 0}
                                     filterOption={(input, option) =>
-                                        option.children.toLowerCase().includes(input.toLowerCase())
+                                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                                     }
                                     onChange={setSelectedUser}
                                 >
                                     {propertyUsers.map(user => (
-                                        <Option key={user.id} value={user.id}>
+                                        <Option key={user.id} value={user.id} label={`${user.full_name} (${user.username}) - ${user.phone}`}>
                                             {user.full_name} ({user.username}) - {user.phone}
                                         </Option>
                                     ))}
@@ -275,7 +275,7 @@ export default function AdminAddPayment() {
                             </Form.Item>
                             {selectedProperty && propertyUsers.length === 0 && (
                                 <Alert 
-                                    message="Tidak ada user terkait" 
+                                    title="Tidak ada user terkait" 
                                     description="Properti ini belum memiliki pemilik/penghuni. Tambahkan di menu Kelola Properti terlebih dahulu."
                                     type="warning" 
                                     showIcon 
@@ -287,7 +287,7 @@ export default function AdminAddPayment() {
 
                     {selectedProperty && selectedPropertyData && (
                         <>
-                            <Divider orientation="left">Informasi Properti</Divider>
+                            <Divider titlePlacement="left">Informasi Properti</Divider>
                             <Row gutter={16}>
                                 <Col span={8}>
                                     <Text strong>Blok & Nomor:</Text>
@@ -307,7 +307,7 @@ export default function AdminAddPayment() {
                         </>
                     )}
 
-                    <Divider orientation="left">Item Pembayaran</Divider>
+                    <Divider titlePlacement="left">Item Pembayaran</Divider>
 
                     <Row gutter={16}>
                         <Col span={8}>

@@ -5,6 +5,22 @@ export class UserController {
         this.userRepo = new UserRepository();
     }
 
+    // Get properties owned/related to the authenticated user
+    async getMyProperties(req, res) {
+        try {
+            const userId = req.user.userId; // From auth middleware
+            
+            const { PropertyUserRepository } = await import('../repositories/PropertyUserRepository.js');
+            const propertyUserRepo = new PropertyUserRepository();
+            
+            const properties = await propertyUserRepo.findPropertiesWithDetailsByUser(userId);
+            res.json(properties);
+        } catch (error) {
+            console.error('Get my properties error:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
     async getAllUsers(req, res) {
         try {
             const users = await this.userRepo.findAll();
@@ -12,7 +28,7 @@ export class UserController {
             const sanitizedUsers = users.map(user => ({
                 id: user.id,
                 username: user.username,
-                full_name: user.full_name,
+                full_name: user.fullName,  // Use camelCase from entity
                 phone: user.phone,
                 email: user.email,
                 role: user.role
